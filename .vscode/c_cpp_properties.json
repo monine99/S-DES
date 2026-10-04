@@ -1,0 +1,44 @@
+{
+    "version": 4,
+    "configurations": [
+        {
+            "name": "w64devkit (MinGW g++)",
+            "includePath": [
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/apps",
+                "${workspaceFolder}/tests"
+            ],
+            "defines": [],
+            "compilerPath": "D:/w64devkit/bin/g++.exe",
+            "compilerArgs": [
+                "-std=c++17"
+            ],
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-gcc-x64"
+        },
+        {
+            "name": "Qt 6 (MinGW)",
+            "includePath": [
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/apps",
+                "${workspaceFolder}/tests",
+                "C:/Qt/6.12.0/mingw_64/include/**"
+            ],
+            "defines": [
+                "QT_WIDGETS_LIB",
+                "QT_GUI_LIB",
+                "QT_CORE_LIB"
+            ],
+            "compilerPath": "C:/Qt/Tools/mingw1310_64/bin/g++.exe",
+            "compilerArgs": [
+                "-std=c++17"
+            ],
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-gcc-x64"
+        }
+    ]
+}

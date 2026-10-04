@@ -1,0 +1,87 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "构建：核心库 + CLI + 自测（不需要 Qt）",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/build-cli.ps1"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "presentation": {
+                "reveal": "silent",
+                "clear": true
+            }
+        },
+        {
+            "label": "构建：Qt 图形界面",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/build-gui.ps1"
+            ],
+            "group": "build",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "clear": true
+            }
+        },
+        {
+            "label": "运行：自测程序",
+            "type": "shell",
+            "command": "${workspaceFolder}/build/test-sdes.exe",
+            "dependsOn": "构建：核心库 + CLI + 自测（不需要 Qt）",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "clear": true
+            }
+        },
+        {
+            "label": "运行：五关演示",
+            "type": "shell",
+            "command": "${workspaceFolder}/build/sdes-cli.exe",
+            "args": [
+                "demo"
+            ],
+            "dependsOn": "构建：核心库 + CLI + 自测（不需要 Qt）",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "clear": true
+            }
+        },
+        {
+            "label": "运行：交叉测试向量表",
+            "type": "shell",
+            "command": "${workspaceFolder}/build/sdes-cli.exe",
+            "args": [
+                "vectors"
+            ],
+            "dependsOn": "构建：核心库 + CLI + 自测（不需要 Qt）",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "clear": true
+            }
+        }
+    ]
+}

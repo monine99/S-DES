@@ -1,0 +1,29 @@
+# 构建产物
+build/
+build-gui/
+out/
+*.exe
+*.dll
+*.o
+*.obj
+*.a
+*.lib
+*.pdb
+*.ilk
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CMakeUserPresets.json
+Testing/
+CTestTestfile.cmake
+
+# 编辑器与系统
+.vs/
+.idea/
+.cache/
+*.user
+*.swp
+Thumbs.db
+desktop.ini
