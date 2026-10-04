@@ -369,6 +369,26 @@ struct SBoxSet {
 
 只需要改 `bit_block.hpp` 里的 `at` / `set` / `permute` / `toString`，其余模块完全不受影响 —— 这正是把位序约定集中在一个文件里的目的。
 
+### 换一套界面配色
+
+图形界面的全部视觉规则集中在 `apps/gui/theme.cpp` 的 `styleSheet()` 里（Qt 样式表），
+配色令牌在文件头部注释中列成了一张表。改主题只需要动这一个文件，
+界面结构代码（`main_window.cpp`）完全不知道颜色细节。
+
+两个约定值得留意：
+
+- **主操作按钮用动态属性标记**，不靠 `objectName`：
+
+  ```cpp
+  button->setProperty("primary", true);   // 对应 QSS 里的 QPushButton[primary="true"]
+  ```
+
+  目前由 `applyPageChrome()` 统一给「每页第一个按钮」打上这个标记，
+  新增按钮时只要遵守「主操作放最左」就不会漏。
+
+- **等宽区域用 `mono` 属性**标记（位串输入框、中间过程文本框、表格）。
+  不能只靠 `setFont()`：全局样式表里的 `font-family` 会把它覆盖掉。
+
 ### 加一个新的前端
 
 核心库是纯 C++ 的静态库，任何前端只要 `#include "sdes/cipher.hpp"` 就能用。CMake 里 `target_link_libraries(你的目标 PRIVATE sdes_core)` 即可。

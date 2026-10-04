@@ -164,6 +164,35 @@ constexpr TestVector kCrossTestVectors[] = {
     {"0011001100", "10101010"},
 };
 
+/// 统一每个标签页的留白，并把该页的主操作按钮标上强调样式。
+///
+/// 约定：每页的主操作按钮放在最左边，因此取页内第一个 QPushButton。
+/// 这样集中处理而不是在每个 new QPushButton 后面各写一行 setProperty，
+/// 是为了避免「新加了按钮却忘了标记主次」这类遗漏。
+void applyPageChrome(QTabWidget* tabs) {
+    if (tabs == nullptr) {
+        return;
+    }
+
+    for (int index = 0; index < tabs->count(); ++index) {
+        QWidget* page = tabs->widget(index);
+        if (page == nullptr) {
+            continue;
+        }
+
+        // 页面留白：Qt 默认值（边距约 9px、间距 6px）偏紧，放开后卡片之间才有呼吸感
+        if (auto* pageLayout = qobject_cast<QVBoxLayout*>(page->layout())) {
+            pageLayout->setContentsMargins(20, 18, 20, 18);
+            pageLayout->setSpacing(14);
+        }
+
+        // 页内第一个按钮 = 该页的主操作，套用强调色
+        if (auto* primaryButton = page->findChild<QPushButton*>()) {
+            primaryButton->setProperty("primary", true);
+        }
+    }
+}
+
 }  // namespace
 
 // =============================================================================
@@ -197,11 +226,12 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     tabs->addTab(createBruteForceTab(), tr("4. 暴力破解"));
     tabs->addTab(createAnalysisTab(), tr("5. 密钥分析"));
     setCentralWidget(tabs);
+    applyPageChrome(tabs);
 
     createMenus();
     statusBar()->showMessage(tr("就绪 —— 密钥扩展读法：%1")
                                  .arg(QString::fromUtf8(sdes::describeKeyScheduleMode(m_keyScheduleMode))));
-    resize(1020, 780);
+    resize(1180, 820);
 }
 
 // -----------------------------------------------------------------------------
@@ -362,9 +392,13 @@ QWidget* MainWindow::createCrossTestTab() {
     m_vectorTable = new QTableWidget(0, 5, tab);
     m_vectorTable->setHorizontalHeaderLabels(
         {tr("序号"), tr("密钥 K (10 bit)"), tr("明文 P"), tr("密文 C"), tr("轮密钥 k1 / k2")});
-    m_vectorTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    // 前几列按内容自适应，最后一列（轮密钥）吃掉剩余宽度。
+    // 比五列平均分配紧凑得多 —— 二进制串本身宽度固定，均分会留出大片空白。
+    m_vectorTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    m_vectorTable->horizontalHeader()->setStretchLastSection(true);
     m_vectorTable->verticalHeader()->setVisible(false);
     m_vectorTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_vectorTable->setAlternatingRowColors(true);
     m_vectorTable->setFont(monospaceFont());
     layout->addWidget(m_vectorTable, 1);
 
@@ -724,6 +758,8 @@ QWidget* MainWindow::createAnalysisTab() {
     m_analysisPlain->setValidator(binaryValidator(8, m_analysisPlain));
     m_analysisPlain->setMaxLength(8);
     m_analysisPlain->setFont(monospaceFont());
+    // QLineEdit 默认的水平尺寸策略是 Expanding，不限制的话会把整行撑开
+    m_analysisPlain->setMaximumWidth(200);
     controlRow->addWidget(m_analysisPlain);
 
     auto* analyseButton = new QPushButton(tr("分析该明文的密钥碰撞"), tab);
@@ -747,6 +783,7 @@ QWidget* MainWindow::createAnalysisTab() {
     m_analysisTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
     m_analysisTable->verticalHeader()->setVisible(false);
     m_analysisTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_analysisTable->setAlternatingRowColors(true);
     m_analysisTable->setFont(monospaceFont());
     layout->addWidget(m_analysisTable, 2);
 

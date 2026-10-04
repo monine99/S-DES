@@ -74,6 +74,8 @@ if(Qt6_FOUND)
         apps/gui/main.cpp
         apps/gui/main_window.cpp
         apps/gui/main_window.hpp
+        apps/gui/theme.cpp
+        apps/gui/theme.hpp
     )
     target_link_libraries(sdes_gui PRIVATE sdes_core Qt6::Widgets)
     set_target_properties(sdes_gui PROPERTIES OUTPUT_NAME sdes-gui)
