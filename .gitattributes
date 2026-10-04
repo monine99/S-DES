@@ -1,0 +1,19 @@
+# 行尾统一为 LF。
+# 二人一组协作时，如果不约定行尾，Windows 同学的 CRLF 与 Linux 同学的 LF
+# 会让 diff 出现整文件级别的差异，掩盖真正的改动。
+# PowerShell 脚本用 LF 同样能正常执行，所以不需要给 .ps1 例外。
+* text=auto eol=lf
+
+# 明确标记为二进制，禁止任何行尾或编码转换
+*.exe    binary
+*.dll    binary
+*.lib    binary
+*.a      binary
+*.obj    binary
+*.pdb    binary
+*.png    binary
+*.jpg    binary
+*.ico    binary
+
+# 文档里的合并冲突更容易处理
+*.md     text diff=markdown
